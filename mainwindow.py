@@ -70,6 +70,9 @@ class MainWindow(QMainWindow):
 
     def on_save_btn_clicked(self):
         (filename, ext) = QFileDialog.getSaveFileName(self, self.tr('Open file'), '/', self.tr('*.txt'))
+        if not filename:
+            return
+
         file = open(filename, 'w')
         if not file:
             self.show_error('Unable to open file: "' + filename + '" to write')
