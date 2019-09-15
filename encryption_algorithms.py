@@ -1,14 +1,14 @@
 def cesar_cipher_encrypt(message: str, key: str):
     result = ''
-    for i in range(0, len(message)):
-        result += chr(ord(message[i]) + 3)
+    for ch in message:
+        result += chr(ord(ch) + 3)
     return result
 
 
 def cesar_cipher_decrypt(message: str, key: str):
     result = ''
-    for i in range(0, len(message)):
-        result += chr(ord(message[i]) - 3)
+    for ch in message:
+        result += chr(ord(ch) - 3)
     return result
 
 
