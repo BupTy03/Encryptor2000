@@ -33,17 +33,23 @@ class MainWindow(QMainWindow):
 
         # setup encryption algorithms
         self.encryptAlgorithms = {
-            'Cesar cipher': [encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt],
-            'Vigenere cipher': [encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt]
+            'Cesar cipher': [encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt, self.hide_key_input],
+            'Vigenere cipher': [encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt, self.show_key_input],
+            'DES': [encrypt.des_cipher_encrypt, encrypt.des_cipher_decrypt, self.show_key_input],
+            'AES': [encrypt.aes_cipher_encrypt, encrypt.aes_cipher_decrypt, self.show_key_input]
         }
 
         self.ui.encryptionMethodComboBox.addItems(self.encryptAlgorithms.keys())
         self.currentMethod = self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][0]
+        self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][2]()
         self.ui.encryptionModeRadioButton.toggle()
 
     def on_encryption_method_changed(self, curr_text: str):
         encrypt_mode_index = 0 if self.ui.encryptionModeRadioButton.isChecked() else 1
         self.currentMethod = self.encryptAlgorithms[curr_text][encrypt_mode_index]
+
+        # prepare GUI
+        self.encryptAlgorithms[curr_text][2]()
 
     def on_encryption_mode_radio_btn_toggled(self, toggled: bool):
         encrypt_mode_index = 0 if toggled else 1
@@ -103,8 +109,21 @@ class MainWindow(QMainWindow):
                 self.show_error('Enter text before press start')
                 return
 
-        text = self.currentMethod(text, key)
+        try:
+            text = self.currentMethod(text, key)
+        except Exception as ex:
+            self.show_error(str(ex))
+            return
+
         self.ui.resultPlainTextEdit.setPlainText(text)
+
+    def hide_key_input(self):
+        self.ui.keyLabel.setVisible(False)
+        self.ui.keyLineEdit.setVisible(False)
+
+    def show_key_input(self):
+        self.ui.keyLabel.setVisible(True)
+        self.ui.keyLineEdit.setVisible(True)
 
 
 
