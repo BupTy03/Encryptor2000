@@ -93,6 +93,10 @@ class MainWindow(QMainWindow):
 
         if self.ui.fileRadioButton.isChecked():
             filename = self.ui.pathLineEdit.text()
+            if len(filename) == 0:
+                self.show_error('Enter filename')
+                return
+
             file = open(filename, 'r')
             if not file:
                 self.show_error('Unable to open file: "' + filename + '" to read')

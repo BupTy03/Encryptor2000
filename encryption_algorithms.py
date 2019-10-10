@@ -3,11 +3,11 @@ from Crypto.Cipher import AES
 
 
 def cesar_cipher_encrypt(message: str, key: str):
-    return ''.join(map(lambda ch: chr((ord(ch) + 3) % 256), message))
+    return ''.join(map(lambda ch: chr((ord(ch) + 3) % 65536), message))
 
 
 def cesar_cipher_decrypt(message: str, key: str):
-    return ''.join(map(lambda ch: chr((256 + ord(ch) - 3) % 256), message))
+    return ''.join(map(lambda ch: chr((65536 + ord(ch) - 3) % 65536), message))
 
 
 def vigenere_cipher_encrypt(message: str, key: str):
@@ -18,7 +18,7 @@ def vigenere_cipher_encrypt(message: str, key: str):
 
     result = ''
     for i in range(0, len(message)):
-        result += chr((ord(message[i]) + ord(key[i % key_length])) % 256)
+        result += chr((ord(message[i]) + ord(key[i % key_length])) % 65536)
     return result
 
 
@@ -30,7 +30,7 @@ def vigenere_cipher_decrypt(message: str, key: str):
 
     result = ''
     for i in range(0, len(message)):
-        result += chr((256 + ord(message[i]) - ord(key[i % key_length])) % 256)
+        result += chr((65536 + ord(message[i]) - ord(key[i % key_length])) % 65536)
     return result
 
 
