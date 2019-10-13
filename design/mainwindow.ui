@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QLabel" name="encryptionMethodLabel">
       <property name="text">
@@ -79,7 +79,7 @@
          <item>
           <layout class="QHBoxLayout" name="fromGroupBoxHorizontalLayout">
            <item>
-            <widget class="QRadioButton" name="plainTextRadioButton">
+            <widget class="QRadioButton" name="fromPlainTextRadioButton">
              <property name="text">
               <string>Plain text</string>
              </property>
@@ -89,24 +89,38 @@
             </widget>
            </item>
            <item>
-            <widget class="QRadioButton" name="fileRadioButton">
+            <widget class="QRadioButton" name="fromFileRadioButton">
              <property name="text">
               <string>File</string>
              </property>
             </widget>
            </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="toGroupBox">
+        <property name="title">
+         <string>To</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="toGroupBoxHorizontalLayout">
            <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QRadioButton" name="toPlainTextRadioButton">
+             <property name="text">
+              <string>Plain text</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="toFileRadioButton">
+             <property name="text">
+              <string>File</string>
              </property>
-            </spacer>
+            </widget>
            </item>
           </layout>
          </item>

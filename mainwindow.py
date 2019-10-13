@@ -25,8 +25,8 @@ class MainWindow(QMainWindow):
         # connect radio buttons
         self.ui.encryptionModeRadioButton.toggled.connect(self.on_encryption_mode_radio_btn_toggled)
 
-        self.ui.fileRadioButton.toggled.connect(self.on_from_file_radio_btn_toggled)
-        self.ui.plainTextRadioButton.toggled.connect(self.on_from_plain_text_radio_btn_toggled)
+        self.ui.fromFileRadioButton.toggled.connect(self.on_from_file_radio_btn_toggled)
+        self.ui.fromPlainTextRadioButton.toggled.connect(self.on_from_plain_text_radio_btn_toggled)
 
         # connect combobox
         self.ui.encryptionMethodComboBox.currentTextChanged.connect(self.on_encryption_method_changed)
@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         key = self.ui.keyLineEdit.text()
         text = ''
 
-        if self.ui.fileRadioButton.isChecked():
+        if self.ui.fromFileRadioButton.isChecked():
             filename = self.ui.pathLineEdit.text()
             if len(filename) == 0:
                 self.show_error('Enter filename')
