@@ -6,25 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>621</width>
-    <height>467</height>
+    <width>605</width>
+    <height>450</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLabel" name="encryptionMethodLabel">
-      <property name="text">
-       <string>Encryption method</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QComboBox" name="encryptionMethodComboBox"/>
-    </item>
     <item>
      <layout class="QHBoxLayout" name="fromAndEncryptionModeHorizontalLayout">
       <item>
@@ -113,6 +109,9 @@
              <property name="text">
               <string>Plain text</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item>
@@ -130,7 +129,34 @@
      </layout>
     </item>
     <item>
-     <widget class="QGroupBox" name="pathToFileGroupBox">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="encryptionMethodLabel">
+        <property name="text">
+         <string>Encryption method:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="encryptionMethodComboBox"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="pathToSourceGroupBox">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -138,13 +164,13 @@
        </size>
       </property>
       <property name="title">
-       <string>Path to text file</string>
+       <string>Path to source file</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="pathLineEdit">
+          <widget class="QLineEdit" name="pathToSourceLineEdit">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -154,7 +180,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="viewPushButton">
+          <widget class="QPushButton" name="viewSourcePushButton">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -164,6 +190,29 @@
              <height>0</height>
             </size>
            </property>
+           <property name="text">
+            <string>View</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="pathToDestFileGroupBox">
+      <property name="title">
+       <string>Path to destination file</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="pathToDestLineEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="viewDestPushButton">
            <property name="text">
             <string>View</string>
            </property>
@@ -216,7 +265,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="keyLineEdit"/>
+       <widget class="QLineEdit" name="keyLineEdit">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -266,7 +322,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>621</width>
+     <width>605</width>
      <height>21</height>
     </rect>
    </property>

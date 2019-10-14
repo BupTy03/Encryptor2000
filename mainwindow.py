@@ -12,21 +12,27 @@ class MainWindow(QMainWindow):
 
         # setup GUI
         self.setWindowTitle('Encryptor2000')
-        self.ui.pathToFileGroupBox.setVisible(False)
+        self.ui.pathToSourceGroupBox.setVisible(False)
+        self.ui.pathToDestFileGroupBox.setVisible(False)
+
         self.ui.resultPlainTextEdit.setReadOnly(True)
-        self.ui.pathLineEdit.setReadOnly(True)
+
+        self.ui.pathToSourceLineEdit.setReadOnly(True)
+        self.ui.pathToDestLineEdit.setReadOnly(True)
+
+        self.resize(self.width(), self.height() - 20)
 
         # connect window buttons
         self.ui.exitPushButton.clicked.connect(self.close)
         self.ui.startPushButton.clicked.connect(self.on_start_btn_clicked)
-        self.ui.viewPushButton.clicked.connect(self.on_view_push_button_clicked)
+        self.ui.viewSourcePushButton.clicked.connect(self.on_view_source_push_button_clicked)
+        self.ui.viewDestPushButton.clicked.connect(self.on_view_dest_push_button_clicked)
         self.ui.savePushButton.clicked.connect(self.on_save_btn_clicked)
 
         # connect radio buttons
         self.ui.encryptionModeRadioButton.toggled.connect(self.on_encryption_mode_radio_btn_toggled)
-
-        self.ui.fromFileRadioButton.toggled.connect(self.on_from_file_radio_btn_toggled)
         self.ui.fromPlainTextRadioButton.toggled.connect(self.on_from_plain_text_radio_btn_toggled)
+        self.ui.toPlainTextRadioButton.toggled.connect(self.on_to_plain_text_radio_btn_toggled)
 
         # connect combobox
         self.ui.encryptionMethodComboBox.currentTextChanged.connect(self.on_encryption_method_changed)
@@ -56,20 +62,35 @@ class MainWindow(QMainWindow):
         self.currentMethod = self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][encrypt_mode_index]
 
     def on_from_plain_text_radio_btn_toggled(self, toggled: bool):
+        if self.ui.pathToSourceGroupBox.isVisible() and self.ui.pathToDestFileGroupBox.isVisible():
+            self.resize(self.width(), self.height() + 100)
+
         self.ui.sourceLabel.setVisible(toggled)
         self.ui.sourcePlainTextEdit.setVisible(toggled)
+        self.ui.pathToSourceGroupBox.setVisible(not toggled)
 
-    def on_from_file_radio_btn_toggled(self, toggled: bool):
-        if not toggled:
-            self.ui.pathToFileGroupBox.setVisible(False)
-            return
+        if self.ui.pathToSourceGroupBox.isVisible() and self.ui.pathToDestFileGroupBox.isVisible():
+            self.resize(self.width(), self.height() - 100)
 
-        self.ui.pathToFileGroupBox.setVisible(True)
-        self.ui.resultPlainTextEdit.clear()
+    def on_to_plain_text_radio_btn_toggled(self, toggled: bool):
+        if self.ui.pathToSourceGroupBox.isVisible() and self.ui.pathToDestFileGroupBox.isVisible():
+            self.resize(self.width(), self.height() + 100)
 
-    def on_view_push_button_clicked(self):
+        self.ui.resultLabel.setVisible(toggled)
+        self.ui.resultPlainTextEdit.setVisible(toggled)
+        self.ui.pathToDestFileGroupBox.setVisible(not toggled)
+        self.ui.savePushButton.setVisible(toggled)
+
+        if self.ui.pathToSourceGroupBox.isVisible() and self.ui.pathToDestFileGroupBox.isVisible():
+            self.resize(self.width(), self.height() - 100)
+
+    def on_view_source_push_button_clicked(self):
         (filename, ext) = QFileDialog.getOpenFileName(self, self.tr('Open file'), '/', self.tr('*.txt'))
-        self.ui.pathLineEdit.setText(filename)
+        self.ui.pathToSourceLineEdit.setText(filename)
+
+    def on_view_dest_push_button_clicked(self):
+        (filename, ext) = QFileDialog.getSaveFileName(self, self.tr('Save file'), '/', self.tr('*.txt'))
+        self.ui.pathToDestLineEdit.setText(filename)
 
     def show_error(self, text: str):
         QMessageBox.critical(self, self.tr('Error'), self.tr(text))
@@ -92,7 +113,7 @@ class MainWindow(QMainWindow):
         text = ''
 
         if self.ui.fromFileRadioButton.isChecked():
-            filename = self.ui.pathLineEdit.text()
+            filename = self.ui.pathToSourceLineEdit.text()
             if len(filename) == 0:
                 self.show_error('Enter filename')
                 return
@@ -119,7 +140,21 @@ class MainWindow(QMainWindow):
             self.show_error(str(ex))
             return
 
-        self.ui.resultPlainTextEdit.setPlainText(text)
+        if self.ui.toPlainTextRadioButton.toggled():
+            self.ui.resultPlainTextEdit.setPlainText(text)
+        else:
+            filename = self.ui.pathToDestLineEdit.text()
+            if len(filename) == 0:
+                self.show_error('Enter filename')
+                return
+
+            file = open(filename, 'w+')
+            if not file:
+                self.show_error('Unable to open file: "' + filename + '" to write')
+                return
+
+            file.write(text)
+            file.close()
 
     def hide_key_input(self):
         self.ui.keyLabel.setVisible(False)
