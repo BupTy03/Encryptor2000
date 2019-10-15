@@ -4,7 +4,9 @@ import sys
 
 
 def main():
+
     app = QApplication(sys.argv)
+
     application = MainWindow()
     application.show()
 
