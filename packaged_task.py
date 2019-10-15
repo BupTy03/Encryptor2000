@@ -25,7 +25,7 @@ class PackagedTask(QObject):
         return self.stored_exception
 
 # slots:
-    @pyqtSlot()
+    @pyqtSlot(name="start_task")
     def start_task(self):
         try:
             self.results = self.task(*self.args)
