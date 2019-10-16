@@ -1,6 +1,6 @@
+import sys
 from PyQt5.QtWidgets import QApplication
 from mainwindow import MainWindow
-import sys
 
 
 def main():
@@ -15,4 +15,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
