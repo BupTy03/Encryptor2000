@@ -6,6 +6,31 @@ import encryption_algorithms as encrypt
 from packaged_task import PackagedTask
 
 
+def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cipher_method, key: str):
+    if from_file and to_file:
+        input_file = open(argstr1, "r")
+        output_file = open(argstr2, "w+")
+        while True:
+            current_bytes = input_file.read(1024)
+            if len(current_bytes) == 0:
+                break
+
+            output_file.write(cipher_method(current_bytes, key))
+
+        input_file.close()
+        output_file.close()
+        return ""
+    elif from_file:
+        with open(argstr1, "r") as input_file:
+            return cipher_method(input_file.read(), key)
+    elif to_file:
+        with open(argstr2, "w+") as output_file:
+            output_file.write(cipher_method(argstr1, key))
+        return ""
+    else:
+        return cipher_method(argstr1, key)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         # init GUI
@@ -130,31 +155,43 @@ class MainWindow(QMainWindow):
     @pyqtSlot(name="on_start_btn_clicked")
     def on_start_btn_clicked(self):
         key = self.ui.keyLineEdit.text()
-        text = ''
-
-        if self.ui.fromFileRadioButton.isChecked():
-            filename = self.ui.pathToSourceLineEdit.text()
-            if len(filename) == 0:
-                self.show_error("Enter filename")
-                return
-
-            file = open(filename, 'r')
-            if not file:
-                self.show_error("Unable to open file: \"" + filename + "\" to read")
-                return
-
-            text = file.read()
-            file.close()
-            if len(text) <= 0:
-                self.show_error("File is empty")
-                return
+        if self.ui.fromFileRadioButton.isChecked() and self.ui.toFileRadioButton.isChecked():
+            self.packaged_task.set_task(task=encrypt_data, args=(
+                True,
+                True,
+                self.ui.pathToSourceLineEdit.text(),
+                self.ui.pathToDestLineEdit.text(),
+                self.currentMethod,
+                key
+            ))
+        elif self.ui.fromFileRadioButton.isChecked():
+            self.packaged_task.set_task(task=encrypt_data, args=(
+                True,
+                False,
+                self.ui.pathToSourceLineEdit.text(),
+                self.ui.resultPlainTextEdit.toPlainText(),
+                self.currentMethod,
+                key
+            ))
+        elif self.ui.toFileRadioButton.isChecked():
+            self.packaged_task.set_task(task=encrypt_data, args=(
+                False,
+                True,
+                self.ui.sourcePlainTextEdit.toPlainText(),
+                self.ui.pathToDestLineEdit.text(),
+                self.currentMethod,
+                key
+            ))
         else:
-            text = self.ui.sourcePlainTextEdit.toPlainText()
-            if len(text) <= 0:
-                self.show_error("Enter text before press start")
-                return
+            self.packaged_task.set_task(task=encrypt_data, args=(
+                False,
+                False,
+                self.ui.sourcePlainTextEdit.toPlainText(),
+                self.ui.resultPlainTextEdit.toPlainText(),
+                self.currentMethod,
+                key
+            ))
 
-        self.packaged_task.set_task(task=self.currentMethod, args=(text, key))
         self.start_processing_task.emit()
 
     @pyqtSlot(bool, name="on_task_done")
@@ -166,19 +203,6 @@ class MainWindow(QMainWindow):
 
         if self.ui.toPlainTextRadioButton.isChecked():
             self.ui.resultPlainTextEdit.setPlainText(text)
-        else:
-            filename = self.ui.pathToDestLineEdit.text()
-            if len(filename) == 0:
-                self.show_error("Enter filename")
-                return
-
-            file = open(filename, 'w+')
-            if not file:
-                self.show_error("Unable to open file: \"" + filename + "\" to write")
-                return
-
-            file.write(text)
-            file.close()
 
 # methods:
     def show_error(self, text: str):

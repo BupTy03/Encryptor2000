@@ -49,8 +49,7 @@ def bytearray2str(bytearr: bytearray):
 
 
 def des_cipher_encrypt(message: str, key: str):
-    byte_key = pad(str2bytearray(key))
-    print('Length of byte_key: ' + str(len(byte_key)))
+    byte_key = str2bytearray(key)
     if len(byte_key) != 8:
         raise ValueError('ValueError: Length of key must be equal to 8')
 
@@ -63,8 +62,7 @@ def des_cipher_encrypt(message: str, key: str):
 
 
 def des_cipher_decrypt(message: str, key: str):
-    byte_key = pad(str2bytearray(key))
-    print('Length of byte_key: ' + str(len(byte_key)))
+    byte_key = str2bytearray(key)
     if len(byte_key) != 8:
         raise ValueError('ValueError: Length of key must be equal to 8')
 
