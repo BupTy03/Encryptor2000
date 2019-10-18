@@ -56,6 +56,8 @@ class MainWindow(QMainWindow):
         self.ui.pathToSourceLineEdit.setReadOnly(True)
         self.ui.pathToDestLineEdit.setReadOnly(True)
 
+        self.ui.startPushButton.setDefault(True)
+
         self.resize(self.width(), self.height() - 20)
 
         # connect window buttons
@@ -192,6 +194,7 @@ class MainWindow(QMainWindow):
                 key
             ))
 
+        self.enable_ui(False)
         self.start_processing_task.emit()
 
     @pyqtSlot(bool, name="on_task_done")
@@ -204,6 +207,8 @@ class MainWindow(QMainWindow):
         if self.ui.toPlainTextRadioButton.isChecked():
             self.ui.resultPlainTextEdit.setPlainText(text)
 
+        self.enable_ui(True)
+
 # methods:
     def show_error(self, text: str):
         QMessageBox.critical(self, self.tr("Error"), self.tr(text))
@@ -215,6 +220,24 @@ class MainWindow(QMainWindow):
     def show_key_input(self):
         self.ui.keyLabel.setVisible(True)
         self.ui.keyLineEdit.setVisible(True)
+
+    def enable_ui(self, enable: bool):
+        self.ui.decryptionModeRadioButton.setEnabled(enable)
+        self.ui.encryptionMethodComboBox.setEnabled(enable)
+        self.ui.encryptionModeRadioButton.setEnabled(enable)
+        self.ui.fromFileRadioButton.setEnabled(enable)
+        self.ui.fromPlainTextRadioButton.setEnabled(enable)
+        self.ui.keyLineEdit.setEnabled(enable)
+        self.ui.pathToDestLineEdit.setEnabled(enable)
+        self.ui.pathToSourceLineEdit.setEnabled(enable)
+        self.ui.resultPlainTextEdit.setEnabled(enable)
+        self.ui.savePushButton.setEnabled(enable)
+        self.ui.sourcePlainTextEdit.setEnabled(enable)
+        self.ui.startPushButton.setEnabled(enable)
+        self.ui.toFileRadioButton.setEnabled(enable)
+        self.ui.toPlainTextRadioButton.setEnabled(enable)
+        self.ui.viewDestPushButton.setEnabled(enable)
+        self.ui.viewSourcePushButton.setEnabled(enable)
 
 
 

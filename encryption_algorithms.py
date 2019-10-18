@@ -3,11 +3,11 @@ from Crypto.Cipher import AES
 
 
 def cesar_cipher_encrypt(message: str, key: str):
-    return ''.join(map(lambda ch: chr((ord(ch) + 3) % 65536), message))
+    return "".join(map(lambda ch: chr((ord(ch) + 3) % 65536), message))
 
 
 def cesar_cipher_decrypt(message: str, key: str):
-    return ''.join(map(lambda ch: chr((65536 + ord(ch) - 3) % 65536), message))
+    return "".join(map(lambda ch: chr((65536 + ord(ch) - 3) % 65536), message))
 
 
 def vigenere_cipher_encrypt(message: str, key: str):
@@ -16,7 +16,7 @@ def vigenere_cipher_encrypt(message: str, key: str):
         key = chr(3)
         key_length = len(key)
 
-    result = ''
+    result = ""
     for i in range(0, len(message)):
         result += chr((ord(message[i]) + ord(key[i % key_length])) % 65536)
     return result
@@ -28,7 +28,7 @@ def vigenere_cipher_decrypt(message: str, key: str):
         key = chr(3)
         key_length = len(key)
 
-    result = ''
+    result = ""
     for i in range(0, len(message)):
         result += chr((65536 + ord(message[i]) - ord(key[i % key_length])) % 65536)
     return result
@@ -51,7 +51,7 @@ def bytearray2str(bytearr: bytearray):
 def des_cipher_encrypt(message: str, key: str):
     byte_key = str2bytearray(key)
     if len(byte_key) != 8:
-        raise ValueError('ValueError: Length of key must be equal to 8')
+        raise ValueError("ValueError: Length of key must be equal to 8")
 
     message = pad(str2bytearray(message), len(byte_key))
 
@@ -64,7 +64,7 @@ def des_cipher_encrypt(message: str, key: str):
 def des_cipher_decrypt(message: str, key: str):
     byte_key = str2bytearray(key)
     if len(byte_key) != 8:
-        raise ValueError('ValueError: Length of key must be equal to 8')
+        raise ValueError("ValueError: Length of key must be equal to 8")
 
     message = pad(str2bytearray(message), len(byte_key))
 
