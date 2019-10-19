@@ -8,8 +8,8 @@ from packaged_task import PackagedTask
 
 def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cipher_method, key: str):
     if from_file and to_file:
-        input_file = open(argstr1, "r")
-        output_file = open(argstr2, "w+")
+        input_file = open(file=argstr1, mode="r", encoding="1251")
+        output_file = open(file=argstr2, mode="w+", encoding="1251")
         while True:
             current_bytes = input_file.read(1024)
             if len(current_bytes) == 0:
@@ -21,10 +21,10 @@ def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cip
         output_file.close()
         return ""
     elif from_file:
-        with open(argstr1, "r") as input_file:
+        with open(file=argstr1, mode="r", encoding="1251") as input_file:
             return cipher_method(input_file.read(), key)
     elif to_file:
-        with open(argstr2, "w+") as output_file:
+        with open(file=argstr2, mode="w+", encoding="1251") as output_file:
             output_file.write(cipher_method(argstr1, key))
         return ""
     else:
