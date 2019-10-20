@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 from PyQt5.QtCore import QThread
-from PyQt5.Qt import pyqtSignal, pyqtSlot
+from PyQt5.Qt import pyqtSignal, pyqtSlot, QTranslator, QLocale
 from design.mainwindow_ui import Ui_MainWindow
 import encryption_algorithms as encrypt
 from packaged_task import PackagedTask
@@ -77,11 +77,26 @@ class MainWindow(QMainWindow):
 
         # setup encryption algorithms
         self.encryptAlgorithms = {
-            "Cesar cipher": [encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt, self.hide_key_input],
-            "Vigenere cipher": [encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt, self.show_key_input],
+            self.tr("Cesar cipher"): [encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt, self.hide_key_input],
+            self.tr("Vigenere cipher"): [encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt, self.show_key_input],
             "DES": [encrypt.des_cipher_encrypt, encrypt.des_cipher_decrypt, self.show_key_input],
             "AES": [encrypt.aes_cipher_encrypt, encrypt.aes_cipher_decrypt, self.show_key_input]
         }
+
+        # setup menu
+        self.ui.menu_exit.triggered.connect(self.close)
+        self.ui.menu_start.triggered.connect(self.on_start_btn_clicked)
+        self.ui.menu_save.triggered.connect(self.on_save_btn_clicked)
+
+        # setup languages
+        self.language_menu_table = {
+            self.ui.language_russian: QLocale.Russian,
+            self.ui.language_english: QLocale.English,
+            self.ui.language_deutsch: QLocale.German
+        }
+        self.ui.language_russian.triggered.connect(self.change_language)
+        self.ui.language_english.triggered.connect(self.change_language)
+        self.ui.language_deutsch.triggered.connect(self.change_language)
 
         self.ui.encryptionMethodComboBox.addItems(self.encryptAlgorithms.keys())
         self.currentMethod = self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][0]
@@ -132,17 +147,17 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(name="on_view_source_push_button_clicked")
     def on_view_source_push_button_clicked(self):
-        (filename, ext) = QFileDialog.getOpenFileName(self, self.tr("Open file"), '/', self.tr("*.txt"))
+        (filename, ext) = QFileDialog.getOpenFileName(self, self.tr("Open file"), '/', "*.txt")
         self.ui.pathToSourceLineEdit.setText(filename)
 
     @pyqtSlot(name="on_view_dest_push_button_clicked")
     def on_view_dest_push_button_clicked(self):
-        (filename, ext) = QFileDialog.getSaveFileName(self, self.tr("Save file"), '/', self.tr("*.txt"))
+        (filename, ext) = QFileDialog.getSaveFileName(self, self.tr("Save file"), '/', "*.txt")
         self.ui.pathToDestLineEdit.setText(filename)
 
     @pyqtSlot(name="on_save_btn_clicked")
     def on_save_btn_clicked(self):
-        (filename, ext) = QFileDialog.getSaveFileName(self, self.tr("Open file"), '/', self.tr("*.txt"))
+        (filename, ext) = QFileDialog.getSaveFileName(self, self.tr("Open file"), '/', "*.txt")
         if not filename:
             return
 
@@ -209,9 +224,18 @@ class MainWindow(QMainWindow):
 
         self.enable_ui(True)
 
+    @pyqtSlot(name="change_language")
+    def change_language(self):
+        language_menu_item = self.sender()
+
+        translator = QTranslator()
+        translator.load(QLocale(self.language_menu_table[language_menu_item]), "localization", "_", "localization")
+        QApplication.installTranslator(translator)
+        self.ui.retranslateUi(self)
+
 # methods:
     def show_error(self, text: str):
-        QMessageBox.critical(self, self.tr("Error"), self.tr(text))
+        QMessageBox.critical(self, self.tr("Error"), text)
 
     def hide_key_input(self):
         self.ui.keyLabel.setVisible(False)
