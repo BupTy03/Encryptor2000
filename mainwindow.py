@@ -87,19 +87,19 @@ class MainWindow(QMainWindow):
         self.encryptionAlgorithms = self.make_encryption_algorithms()
 
         # setup menu
-        self.ui.menu_exit.triggered.connect(self.close)
-        self.ui.menu_start.triggered.connect(self.on_start_btn_clicked)
-        self.ui.menu_save.triggered.connect(self.on_save_btn_clicked)
+        self.ui.menuExit.triggered.connect(self.close)
+        self.ui.menuStart.triggered.connect(self.on_start_btn_clicked)
+        self.ui.menuSave.triggered.connect(self.on_save_btn_clicked)
 
         # setup languages
         self.language_menu_table = {
-            self.ui.language_russian: QLocale.Russian,
-            self.ui.language_english: QLocale.English,
-            self.ui.language_deutsch: QLocale.German
+            self.ui.languageRussian: QLocale.Russian,
+            self.ui.languageEnglish: QLocale.English,
+            self.ui.languageDeutsch: QLocale.German
         }
-        self.ui.language_russian.triggered.connect(self.change_language)
-        self.ui.language_english.triggered.connect(self.change_language)
-        self.ui.language_deutsch.triggered.connect(self.change_language)
+        self.ui.languageRussian.triggered.connect(self.change_language)
+        self.ui.languageEnglish.triggered.connect(self.change_language)
+        self.ui.languageDeutsch.triggered.connect(self.change_language)
 
         self.ui.encryptionMethodComboBox.addItems(get_list_of_first_elems_in_pairs(self.encryptionAlgorithms))
 

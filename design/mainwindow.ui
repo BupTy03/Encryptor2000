@@ -330,20 +330,20 @@
     <property name="title">
      <string>Menu</string>
     </property>
-    <addaction name="menu_start"/>
-    <addaction name="menu_save"/>
-    <addaction name="menu_exit"/>
+    <addaction name="menuStart"/>
+    <addaction name="menuSave"/>
+    <addaction name="menuExit"/>
    </widget>
-   <widget class="QMenu" name="menu_language">
+   <widget class="QMenu" name="menuLanguage">
     <property name="title">
      <string>Language</string>
     </property>
-    <addaction name="language_russian"/>
-    <addaction name="language_english"/>
-    <addaction name="language_deutsch"/>
+    <addaction name="languageRussian"/>
+    <addaction name="languageEnglish"/>
+    <addaction name="languageDeutsch"/>
    </widget>
    <addaction name="menu"/>
-   <addaction name="menu_language"/>
+   <addaction name="menuLanguage"/>
   </widget>
   <action name="action">
    <property name="text">
@@ -355,32 +355,32 @@
     <string>Выход</string>
    </property>
   </action>
-  <action name="menu_save">
+  <action name="menuSave">
    <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="menu_exit">
+  <action name="menuExit">
    <property name="text">
     <string>Exit</string>
    </property>
   </action>
-  <action name="language_english">
+  <action name="languageEnglish">
    <property name="text">
     <string>English</string>
    </property>
   </action>
-  <action name="language_deutsch">
+  <action name="languageDeutsch">
    <property name="text">
     <string>Deutsch</string>
    </property>
   </action>
-  <action name="language_russian">
+  <action name="languageRussian">
    <property name="text">
     <string>Русский</string>
    </property>
   </action>
-  <action name="menu_start">
+  <action name="menuStart">
    <property name="text">
     <string>Start</string>
    </property>
