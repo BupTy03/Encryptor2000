@@ -19,6 +19,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setWindowTitle("Encryptor2000")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -203,7 +204,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.encryptionModeGroupBox.setTitle(_translate("MainWindow", "Encryption mode"))
         self.encryptionModeRadioButton.setText(_translate("MainWindow", "Encrypt"))
         self.decryptionModeRadioButton.setText(_translate("MainWindow", "Decrypt"))

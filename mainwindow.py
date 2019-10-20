@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QComboBox
 from PyQt5.QtCore import QThread
-from PyQt5.Qt import pyqtSignal, pyqtSlot, QTranslator, QLocale
+from PyQt5.Qt import pyqtSignal, pyqtSlot, QTranslator, QLocale, QObject
 from design.mainwindow_ui import Ui_MainWindow
-import encryption_algorithms as encrypt
 from packaged_task import PackagedTask
+from collections import namedtuple
+import encryption_algorithms as encrypt
 
 
 def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cipher_method, key: str):
@@ -31,6 +32,14 @@ def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cip
         return cipher_method(argstr1, key)
 
 
+EncryptionOperations = namedtuple('EncryptionOperations', ['ENCRYPT', 'DECRYPT', 'PREPARE_GUI'])
+EncryptionMethod = namedtuple('EncryptionMethod', ['name', 'operations'])
+
+
+def get_list_of_first_elems_in_pairs(pairs):
+    return [pair[0] for pair in pairs]
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         # init GUI
@@ -47,7 +56,6 @@ class MainWindow(QMainWindow):
         self.second_thread.start()
 
         # setup GUI
-        self.setWindowTitle("Encryptor2000")
         self.ui.pathToSourceGroupBox.setVisible(False)
         self.ui.pathToDestFileGroupBox.setVisible(False)
 
@@ -73,15 +81,10 @@ class MainWindow(QMainWindow):
         self.ui.toPlainTextRadioButton.toggled.connect(self.on_to_plain_text_radio_btn_toggled)
 
         # connect combobox
-        self.ui.encryptionMethodComboBox.currentTextChanged.connect(self.on_encryption_method_changed)
+        self.ui.encryptionMethodComboBox.currentIndexChanged.connect(self.on_encryption_method_changed)
 
         # setup encryption algorithms
-        self.encryptAlgorithms = {
-            self.tr("Cesar cipher"): [encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt, self.hide_key_input],
-            self.tr("Vigenere cipher"): [encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt, self.show_key_input],
-            "DES": [encrypt.des_cipher_encrypt, encrypt.des_cipher_decrypt, self.show_key_input],
-            "AES": [encrypt.aes_cipher_encrypt, encrypt.aes_cipher_decrypt, self.show_key_input]
-        }
+        self.encryptionAlgorithms = self.make_encryption_algorithms()
 
         # setup menu
         self.ui.menu_exit.triggered.connect(self.close)
@@ -98,27 +101,30 @@ class MainWindow(QMainWindow):
         self.ui.language_english.triggered.connect(self.change_language)
         self.ui.language_deutsch.triggered.connect(self.change_language)
 
-        self.ui.encryptionMethodComboBox.addItems(self.encryptAlgorithms.keys())
-        self.currentMethod = self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][0]
-        self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][2]()
+        self.ui.encryptionMethodComboBox.addItems(get_list_of_first_elems_in_pairs(self.encryptionAlgorithms))
+
+        assert len(self.encryptionAlgorithms) > 0
+        self.currentMethod = self.encryptionAlgorithms[0].operations.ENCRYPT
+        self.encryptionAlgorithms[0].operations.PREPARE_GUI()
         self.ui.encryptionModeRadioButton.toggle()
 
 # signals:
     start_processing_task = pyqtSignal()
 
 # slots:
-    @pyqtSlot(str, name="on_encryption_method_changed")
-    def on_encryption_method_changed(self, curr_text: str):
+    @pyqtSlot(int, name="on_encryption_method_changed")
+    def on_encryption_method_changed(self, index: int):
         encrypt_mode_index = 0 if self.ui.encryptionModeRadioButton.isChecked() else 1
-        self.currentMethod = self.encryptAlgorithms[curr_text][encrypt_mode_index]
+        self.currentMethod = self.encryptionAlgorithms[index].operations[encrypt_mode_index]
 
         # prepare GUI
-        self.encryptAlgorithms[curr_text][2]()
+        self.encryptionAlgorithms[index].operations.PREPARE_GUI()
 
     @pyqtSlot(bool, name="on_encryption_mode_radio_btn_toggled")
     def on_encryption_mode_radio_btn_toggled(self, toggled: bool):
         encrypt_mode_index = 0 if toggled else 1
-        self.currentMethod = self.encryptAlgorithms[self.ui.encryptionMethodComboBox.currentText()][encrypt_mode_index]
+        self.currentMethod = \
+            self.encryptionAlgorithms[self.ui.encryptionMethodComboBox.currentIndex()].operations[encrypt_mode_index]
 
     @pyqtSlot(bool, name="on_from_plain_text_radio_btn_toggled")
     def on_from_plain_text_radio_btn_toggled(self, toggled: bool):
@@ -232,6 +238,7 @@ class MainWindow(QMainWindow):
         translator.load(QLocale(self.language_menu_table[language_menu_item]), "localization", "_", "localization")
         QApplication.installTranslator(translator)
         self.ui.retranslateUi(self)
+        self.retranslate_encryption_method_combobox()
 
 # methods:
     def show_error(self, text: str):
@@ -244,6 +251,25 @@ class MainWindow(QMainWindow):
     def show_key_input(self):
         self.ui.keyLabel.setVisible(True)
         self.ui.keyLineEdit.setVisible(True)
+
+    def make_encryption_algorithms(self):
+        return [
+            EncryptionMethod(self.tr("Cesar cipher"), EncryptionOperations(
+                encrypt.cesar_cipher_encrypt, encrypt.cesar_cipher_decrypt, self.hide_key_input)),
+
+            EncryptionMethod(self.tr("Vigenere cipher"), EncryptionOperations(
+                encrypt.vigenere_cipher_encrypt, encrypt.vigenere_cipher_decrypt, self.show_key_input)),
+
+            EncryptionMethod("DES", EncryptionOperations(
+                encrypt.des_cipher_encrypt, encrypt.des_cipher_decrypt, self.show_key_input)),
+
+            EncryptionMethod("AES", EncryptionOperations(
+                encrypt.aes_cipher_encrypt, encrypt.aes_cipher_decrypt, self.show_key_input))
+        ]
+
+    def retranslate_encryption_method_combobox(self):
+        self.ui.encryptionMethodComboBox.clear()
+        self.ui.encryptionMethodComboBox.addItems(get_list_of_first_elems_in_pairs(self.make_encryption_algorithms()))
 
     def enable_ui(self, enable: bool):
         self.ui.decryptionModeRadioButton.setEnabled(enable)
