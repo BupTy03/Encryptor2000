@@ -32,8 +32,8 @@ def encrypt_data(from_file: bool, to_file: bool, argstr1: str, argstr2: str, cip
         return cipher_method(argstr1, key)
 
 
-EncryptionOperations = namedtuple('EncryptionOperations', ['ENCRYPT', 'DECRYPT', 'PREPARE_GUI'])
-EncryptionMethod = namedtuple('EncryptionMethod', ['name', 'operations'])
+EncryptionOperations = namedtuple("EncryptionOperations", ["ENCRYPT", "DECRYPT", "PREPARE_GUI"])
+EncryptionMethod = namedtuple("EncryptionMethod", ["name", "operations"])
 
 
 def get_list_of_first_elems_in_pairs(pairs):
