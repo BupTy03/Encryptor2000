@@ -5,4 +5,9 @@
 	<qresource prefix="style">
         <file alias="styles.qss">style/styles.qss</file>
     </qresource>
+	<qresource prefix="localization">
+        <file alias="localization_de.qm">localization/localization_de.qm</file>
+		<file alias="localization_en.qm">localization/localization_en.qm</file>
+		<file alias="localization_ru.qm">localization/localization_ru.qm</file>
+    </qresource>
 </RCC>

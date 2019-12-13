@@ -15,7 +15,7 @@ def main():
     app.setStyleSheet(styles.readAll().data().decode("latin1"))
 
     translator = QTranslator()
-    if translator.load(QLocale(), "localization", "_", "localization"):
+    if translator.load(QLocale(), "localization", "_", ":/localization"):
         app.installTranslator(translator)
     else:
         print("Unable to load localization")

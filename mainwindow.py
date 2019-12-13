@@ -235,7 +235,7 @@ class MainWindow(QMainWindow):
         language_menu_item = self.sender()
 
         translator = QTranslator()
-        translator.load(QLocale(self.language_menu_table[language_menu_item]), "localization", "_", "localization")
+        translator.load(QLocale(self.language_menu_table[language_menu_item]), "localization", "_", ":/localization")
         QApplication.installTranslator(translator)
         self.ui.retranslateUi(self)
         self.retranslate_encryption_method_combobox()
